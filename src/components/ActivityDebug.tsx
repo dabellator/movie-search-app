@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useActivityStore } from '../store/userActivity'
 
-export default function ActivityDebug() {
+const ActivityDebug = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const { events, preferences, getActivityForAI, clearAllData } = useActivityStore()
   const aiData = getActivityForAI()
@@ -167,3 +167,5 @@ export default function ActivityDebug() {
     </div>
   )
 }
+
+export default ActivityDebug

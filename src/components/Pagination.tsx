@@ -1,3 +1,5 @@
+import Card from './Card'
+
 interface PaginationProps {
   currentPage: number
   totalPages: number
@@ -5,19 +7,19 @@ interface PaginationProps {
   isLoading: boolean
 }
 
-export default function Pagination({
+const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
   isLoading,
-}: PaginationProps) {
+}: PaginationProps) => {
   if (totalPages <= 1) return null
 
   const canGoPrevious = currentPage > 1
   const canGoNext = currentPage < totalPages
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border-2 border-gray-700 mt-8">
+    <Card className="mt-8">
       <div className="flex items-center justify-between flex-wrap gap-4">
         {/* Previous Button */}
         <button
@@ -47,6 +49,8 @@ export default function Pagination({
           Next →
         </button>
       </div>
-    </div>
+    </Card>
   )
 }
+
+export default Pagination

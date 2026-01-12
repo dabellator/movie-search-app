@@ -1,5 +1,6 @@
-import { useState, KeyboardEvent } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import type { Genre } from '../types/movie'
+import LoadingSpinner from './LoadingSpinner'
 
 interface SearchBarProps {
   searchQuery: string
@@ -11,9 +12,11 @@ interface SearchBarProps {
   onGenreChange: (genreId: string | null) => void
   onSearchSubmit: () => void
   onViewModeChange: (mode: 'grid' | 'list') => void
+  onGetRecommendations: () => void
+  isGettingRecommendations?: boolean
 }
 
-export default function SearchBar({
+const SearchBar = ({
   searchQuery,
   selectedGenre,
   genres,
@@ -23,7 +26,9 @@ export default function SearchBar({
   onGenreChange,
   onSearchSubmit,
   onViewModeChange,
-}: SearchBarProps) {
+  onGetRecommendations,
+  isGettingRecommendations = false,
+}: SearchBarProps) => {
   const [localQuery, setLocalQuery] = useState(searchQuery)
 
   const handleInputChange = (value: string) => {
@@ -119,9 +124,9 @@ export default function SearchBar({
         </div>
       </div>
 
-      {/* Clear Filters */}
-      {hasFilters && (
-        <div className="mt-4 flex items-center justify-between">
+      {/* Clear Filters & AI Recommendations */}
+      <div className="mt-4 flex items-center justify-between flex-wrap gap-4">
+        {hasFilters ? (
           <div className="text-sm text-gray-400">
             {searchQuery && (
               <span>
@@ -135,15 +140,44 @@ export default function SearchBar({
               </span>
             )}
           </div>
+        ) : (
+          <div className="flex-1"></div>
+        )}
+        
+        <div className="flex items-center gap-3">
+          {hasFilters && (
+            <button
+              onClick={handleClear}
+              disabled={isLoading}
+              className="text-sm text-blue-400 hover:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Clear filters
+            </button>
+          )}
+          
           <button
-            onClick={handleClear}
-            disabled={isLoading}
-            className="text-sm text-blue-400 hover:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={onGetRecommendations}
+            disabled={isLoading || isGettingRecommendations}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
           >
-            Clear filters
+            {isGettingRecommendations ? (
+              <>
+                <LoadingSpinner size="sm" className="border-white border-t-transparent" />
+                <span>Getting Recommendations...</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span>AI Recommendations</span>
+              </>
+            )}
           </button>
         </div>
-      )}
+      </div>
     </div>
   )
 }
+
+export default SearchBar

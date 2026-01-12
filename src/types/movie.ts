@@ -41,13 +41,3 @@ export interface MovieFilterInput {
   search?: string
   genre?: string
 }
-
-export interface MovieConnection {
-  nodes: Movie[]
-  pagination: Pagination
-}
-
-export interface GenreConnection {
-  nodes: Genre[]
-  pagination: Pagination
-}

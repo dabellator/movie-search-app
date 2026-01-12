@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+// Debounces a value by delaying updates until after the specified delay period
+// Useful for reducing API calls on search inputs
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 

@@ -1,6 +1,11 @@
+// Authentication utilities for Movies API
+// Handles token fetching and caching in localStorage
+
 const BASE_URL = 'https://0kadddxyh3.execute-api.us-east-1.amazonaws.com'
 const TOKEN_STORAGE_KEY = 'movies_api_token'
 
+// Fetches and caches an authentication token for the Movies API
+// Returns cached token if available, otherwise fetches a new one
 export async function getAuthToken(): Promise<string> {
   // Check if we have a cached token
   const cachedToken = localStorage.getItem(TOKEN_STORAGE_KEY)
@@ -27,6 +32,7 @@ export async function getAuthToken(): Promise<string> {
   }
 }
 
+// Clears the cached authentication token (useful for logout)
 export function clearAuthToken(): void {
   localStorage.removeItem(TOKEN_STORAGE_KEY)
 }

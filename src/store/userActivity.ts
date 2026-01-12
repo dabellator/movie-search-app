@@ -1,3 +1,6 @@
+// User activity tracking store using Zustand
+// Tracks search queries, genre filters, and movie views for AI recommendations
+// Persists data to localStorage with automatic pruning of old events
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type {
@@ -7,7 +10,7 @@ import type {
   MovieViewEvent,
   GenreFilterEvent,
   AIPromptData,
-} from './types'
+} from '../types/activity'
 
 interface UserActivityStore {
   events: ActivityEvent[]
@@ -163,10 +166,19 @@ export const useActivityStore = create<UserActivityStore>()(
           .sort((a, b) => b.count - a.count)
           .slice(0, 10)
 
-        // Get recently viewed movies (last 10)
+        // Get recently viewed movies (last 10, most recent first, unique)
+        const seenMovies = new Set<string>()
         const recentlyViewed = events
           .filter((e): e is MovieViewEvent => e.type === 'movie_view')
-          .slice(-10)
+          .reverse()
+          .filter((e) => {
+            if (seenMovies.has(e.movieId)) {
+              return false
+            }
+            seenMovies.add(e.movieId)
+            return true
+          })
+          .slice(0, 10)
           .map((e) => ({
             title: e.movieTitle,
             genres: e.genres,
